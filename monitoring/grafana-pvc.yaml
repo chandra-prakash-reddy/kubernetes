@@ -1,0 +1,12 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: grafana-persistent-claim
+  namespace: monitoring
+spec:
+  storageClassName: grafanadata
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Mi
