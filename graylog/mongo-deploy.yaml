@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deploy
+  namespace: logging
+  labels:
+    app: mongo-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo-deploy
+  template:
+    metadata:
+      labels:
+        app: mongo-deploy
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:3
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-persistent-storage
+        persistentVolumeClaim:
+          claimName: mongo-persistent-claim
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo
+  namespace: logging
+spec:
+  selector:
+    app: mongo-deploy
+  ports:
+  - name: "27017"
+    port: 27017
+    targetPort: 27017
+
